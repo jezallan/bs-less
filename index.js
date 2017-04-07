@@ -21,7 +21,7 @@ module.exports = function (serverPath, opts) {
         marked       = require('marked').setOptions({smartypants: true}),
         CACHE        = {},
         watcherOpts  = {
-            ignoreinitial: false,
+            ignoreinitial: true,
             ignored: ['vendor', 'node_modules', 'bower_components', 'build']
         };
 
@@ -495,6 +495,7 @@ module.exports = function (serverPath, opts) {
         notify: false,
         minify: false,
         server: serverPath,
+        logFileChanges: true,
         files: [
             {
                 options: watcherOpts,
