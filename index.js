@@ -496,7 +496,6 @@ module.exports = function (serverPath, opts) {
         minify: false,
         server: serverPath,
         logFileChanges: true,
-        reloadDebounce: 2000,
         files: [
             {
                 options: watcherOpts,
