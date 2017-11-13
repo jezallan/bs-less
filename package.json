@@ -32,5 +32,8 @@
   "bugs": {
     "url": "https://github.com/zanona/bs-less/issues"
   },
-  "homepage": "https://github.com/zanona/bs-less#readme"
+  "homepage": "https://github.com/zanona/bs-less#readme",
+  "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1"
+  }
 }
