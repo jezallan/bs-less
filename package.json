@@ -5,17 +5,17 @@
   "description": "BrowserSync with support for live LESS reload",
   "main": "index.js",
   "dependencies": {
-    "autoprefixer": "^6.7.7",
+    "autoprefixer": "^7.1.6",
     "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
-    "babelify": "^7.3.0",
+    "babelify": "^8.0.0",
     "browser-sync": "^2.18.13",
-    "browserify": "^14.3.0",
-    "less": "^2.7.2",
+    "browserify": "^14.5.0",
+    "less": "^2.7.3",
     "marked": "^0.3.6",
-    "postcss": "^5.2.17",
-    "postcss-flexbugs-fixes": "^2.1.1"
+    "postcss": "^6.0.14",
+    "postcss-flexbugs-fixes": "^3.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
