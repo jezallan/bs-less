@@ -14,10 +14,10 @@ module.exports = function (serverPath, opts) {
         flexfix      = require('postcss-flexbugs-fixes'),
         postcss      = require('postcss'),
         browserify   = require('browserify'),
-        regenerator  = require('regenerator'),
         babel        = require('babel-core'),
         babelify     = require('babelify'),
-        es2015       = require('babel-preset-es2015'),
+        babelEnv     = require('babel-preset-env'),
+        babelStage3  = require('babel-preset-stage-3'),
         marked       = require('marked').setOptions({smartypants: true}),
         CACHE        = {},
         watcherOpts  = {
@@ -44,18 +44,12 @@ module.exports = function (serverPath, opts) {
         return pre + raw.replace(content, () => newContent) + pos;
     }
     function adjustFilePaths(vFile) {
-        var links = /<[\w-]+ +.*?(?:src|href)=['"]?(.+?)['">\s]/g,
-            requires = /require\(['"]([\.\/].*?)['"]\)/g;
+        var links = /<[\w-]+ +.*?(?:src|href)=['"]?(.+?)['">\s]/g;
         return new Promise(function (resolve) {
             vFile.source = vFile.source.replace(links, function (m, src) {
                 src = src.trim();
                 if (!src || src.match(/^(\w+:|#|\/|\$)/)) { return m; }
                 var resolved = resolveFilePath(src, vFile.path);
-                return m.replace(src, resolved);
-            }).replace(requires, function (m, src) {
-                var resolved = resolveFilePath(src, vFile.path)
-                    .replace('/index.html', '')
-                    .replace(/^\w/, './$&');
                 return m.replace(src, resolved);
             });
             resolve(vFile);
@@ -110,10 +104,13 @@ module.exports = function (serverPath, opts) {
     }
 
     function replaceEnvVars(vFile) {
-        var pattern = /\$ENV\[['"]?([\w\.\-\/@]+?)['"]?\]/g;
+        var pattern     = /(?:\$ENV|process\.env)\[['"]?([\w\.\-\/@]+?)['"]?\]/g,
+            nodePattern = /process.env(?:\.(.+?)\b|\[(["'])(.+?)\2\])/g;
         return new Promise(function (resolve) {
             vFile.source = vFile.source.replace(pattern, function (_, v) {
                 return process.env[v] || '';
+            }).replace(nodePattern, function (m,v1,_,v3) {
+                return `'${process.env[v1 || v3] || ''}'`;
             });
             resolve(vFile);
         });
@@ -249,26 +246,12 @@ module.exports = function (serverPath, opts) {
     }
     */
 
-    function regenerate(vFile) {
-        return new Promise((resolve, reject) => {
-            try {
-                vFile.source = regenerator.compile(vFile.source).code;
-                resolve(vFile);
-            } catch (e) {
-                reject({
-                    error: true,
-                    path: vFile.path,
-                    source: e.message
-                });
-            }
-        });
-    }
     function babelPromise(vFile) {
         return new Promise((resolve, reject) => {
             try {
                 vFile.source = babel.transform(vFile.source, {
                     filename: vFile.path,
-                    presets: [es2015]
+                    presets: [babelEnv, babelStage3]
                 }).code;
                 resolve(vFile);
             } catch (e) {
@@ -283,17 +266,16 @@ module.exports = function (serverPath, opts) {
     function browserifyPromise(vFile) {
         return new Promise(function (resolve, reject) {
             const moduleMatch = /^(?:[ \t]*)?(?:import|export)\b|\brequire\(/gm;
-            if (!vFile.source.match(moduleMatch)) {
-                return resolve(vFile); }
-            var src = new stream.Readable();
+            if (!vFile.source.match(moduleMatch)) return resolve(vFile);
+            const src = new stream.Readable(); //eslint-disable-line one-var
             src.push(vFile.source);
             src.push(null);
             src.file = vFile.path;
             browserify(src, {debug: true})
-                .transform(regenerator)
                 .transform(babelify, {
                     filename: vFile.path,
-                    presets: [es2015]
+                    presets: [babelEnv, babelStage3],
+                    global: true
                 })
                 .bundle(function (err, bundle) {
                     if (err) {
@@ -303,22 +285,26 @@ module.exports = function (serverPath, opts) {
                             source: err.message
                         });
                     }
-                    resolve({
-                        path: vFile.path,
-                        source: bundle.toString()
-                    });
+                    resolve({path: vFile.path, source: bundle.toString()});
                 });
         });
     }
     function processJS(vFile) {
-        return regenerate(vFile)
-            .then(browserifyPromise)
-            .then(babelPromise)
-            .then(replaceEnvVars)
-            .catch(function (errorFile) {
-                errorFile.source = outputJSError(errorFile.source);
-                return errorFile;
-            });
+        let promise;
+        if (vFile.source.match('module.exports')) {
+            // do not process raw modules since those should
+            // be included by other file
+            return Promise.resolve(vFile);
+        }
+        if (vFile.source.match(/require\(/)) {
+            promise = browserifyPromise(vFile);
+        } else {
+            promise = babelPromise(vFile);
+        }
+        return promise.then(replaceEnvVars).catch(function (errorFile) {
+            errorFile.source = outputJSError(errorFile.source);
+            return errorFile;
+        });
     }
 
     function processInlineScripts(vFile) {
