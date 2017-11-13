@@ -8,7 +8,9 @@ module.exports = function (serverPath, opts) {
         stream       = require('stream'),
         bs           = require('browser-sync').create(),
         less         = require('less'),
-        autoprefixer = require('autoprefixer'),
+        autoprefixer = require('autoprefixer')({
+            browsers: ['last 2 versions', 'safari >= 8', 'ie >= 11']
+        }),
         flexfix      = require('postcss-flexbugs-fixes'),
         postcss      = require('postcss'),
         browserify   = require('browserify'),
