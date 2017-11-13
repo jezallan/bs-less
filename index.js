@@ -20,7 +20,7 @@ module.exports = function (serverPath, opts) {
         CACHE        = {},
         watcherOpts  = {
             ignoreinitial: false,
-            ignored: ['vendor', 'node_modules', 'bower_components', 'build']
+            ignored: ['vendor', 'node_modules', 'bower_components', 'build', 'scripts']
         };
 
     function resolveFilePath(fileName, parentName) {
