@@ -48,7 +48,7 @@ module.exports = function (serverPath, opts) {
         return new Promise(function (resolve) {
             vFile.source = vFile.source.replace(links, function (m, src) {
                 src = src.trim();
-                if (!src || src.match(/^(\w+:|#|\/|\$)/)) { return m; }
+                if (!src || src.match(/^(\w+:|#|{|\/|\$)/)) { return m; }
                 var resolved = resolveFilePath(src, vFile.path);
                 return m.replace(src, resolved);
             });
