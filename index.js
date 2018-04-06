@@ -22,7 +22,17 @@ module.exports = function (serverPath, opts) {
         CACHE        = {},
         watcherOpts  = {
             ignoreinitial: false,
-            ignored: ['vendor', 'node_modules', 'bower_components', 'build', 'scripts']
+            ignored: [
+                'node_modules', 
+                'build', 
+                'scripts', 
+                'src', 
+                'app.js',
+                'app.bundle.js',
+                'vendor.js', 
+                'vendor.bundle.js', 
+                'webpack.config.js'
+            ]
         };
 
     function resolveFilePath(fileName, parentName) {
