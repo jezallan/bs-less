@@ -9,7 +9,7 @@ module.exports = function (serverPath, opts) {
         bs           = require('browser-sync').create(),
         less         = require('less'),
         autoprefixer = require('autoprefixer')({
-            browsers: ['last 2 versions', 'safari >= 8', 'ie >= 11']
+            browsers: ['> 0.25%', 'IE 11']
         }),
         flexfix      = require('postcss-flexbugs-fixes'),
         postcss      = require('postcss'),
@@ -17,7 +17,6 @@ module.exports = function (serverPath, opts) {
         babel        = require('babel-core'),
         babelify     = require('babelify'),
         babelEnv     = require('babel-preset-env'),
-        babelStage3  = require('babel-preset-stage-3'),
         marked       = require('marked').setOptions({smartypants: true}),
         CACHE        = {},
         watcherOpts  = {
@@ -261,7 +260,7 @@ module.exports = function (serverPath, opts) {
             try {
                 vFile.source = babel.transform(vFile.source, {
                     filename: vFile.path,
-                    presets: [babelEnv, babelStage3]
+                    presets: [babelEnv]
                 }).code;
                 resolve(vFile);
             } catch (e) {
@@ -284,7 +283,7 @@ module.exports = function (serverPath, opts) {
             browserify(src, {debug: true})
                 .transform(babelify, {
                     filename: vFile.path,
-                    presets: [babelEnv, babelStage3],
+                    presets: [babelEnv],
                     global: true
                 })
                 .bundle(function (err, bundle) {
