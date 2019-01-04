@@ -14,22 +14,22 @@ module.exports = function (serverPath, opts) {
         flexfix      = require('postcss-flexbugs-fixes'),
         postcss      = require('postcss'),
         browserify   = require('browserify'),
-        babel        = require('babel-core'),
+        babel        = require('@babel/core'),
         babelify     = require('babelify'),
-        babelEnv     = require('babel-preset-env'),
+        babelEnv     = require('@babel/preset-env'),
         marked       = require('marked').setOptions({smartypants: true}),
         CACHE        = {},
         watcherOpts  = {
             ignoreinitial: false,
             ignored: [
-                'node_modules', 
-                'build', 
-                'scripts', 
-                'src', 
+                'node_modules',
+                'build',
+                'scripts',
+                'src',
                 'app.js',
                 'app.bundle.js',
-                'vendor.js', 
-                'vendor.bundle.js', 
+                'vendor.js',
+                'vendor.bundle.js',
                 'webpack.config.js'
             ]
         };
