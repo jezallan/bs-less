@@ -1,20 +1,20 @@
 {
   "name": "bs-less",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.2.0",
   "description": "BrowserSync with support for live LESS reload",
   "main": "index.js",
   "dependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.3",
-    "autoprefixer": "^9.4.4",
-    "babelify": "^10.0.0",
-    "browser-sync": "^2.26.3",
-    "browserify": "^16.2.3",
-    "less": "^3.9.0",
-    "marked": "^0.6.0",
-    "postcss": "^7.0.7",
-    "postcss-flexbugs-fixes": "^4.1.0"
+    "autoprefixer": "^8.4.1",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "browser-sync": "^2.24.2",
+    "browserify": "^16.2.0",
+    "less": "^2.7.3",
+    "marked": "^0.3.6",
+    "postcss": "^6.0.22",
+    "postcss-flexbugs-fixes": "^3.3.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -32,5 +32,11 @@
     "url": "https://github.com/zanona/bs-less/issues"
   },
   "homepage": "https://github.com/zanona/bs-less#readme",
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1"
+  },
+  "browserslist": [
+    "> 0.25%",
+    "IE 11"
+  ]
 }
