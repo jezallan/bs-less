@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-console.log('This is BS-Less. Be afraid, here be dragons');
+console.log('BS-Less (┛◉Д◉)┛彡┻━┻');
 const opts = {};
 
 process.argv.forEach((opt) => {
